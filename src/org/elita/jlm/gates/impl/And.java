@@ -1,7 +1,6 @@
 package org.elita.jlm.gates.impl;
 
 import org.elita.jlm.gates.Gate;
-
 import java.util.List;
 
 public class And implements Gate {
