@@ -6,6 +6,7 @@ import java.util.List;
 
 public class SystemModel {
 
+    private ErrorFlags errorFlags;
     private List<String> inputList;
     private List<String> outputList;
     private List<Gate> gates;
@@ -42,5 +43,13 @@ public class SystemModel {
 
     public void setLabels(List<Labels> labels) {
         this.labels = labels;
+    }
+
+    public ErrorFlags getErrorFlags() {
+        return errorFlags;
+    }
+
+    public void setErrorFlags(ErrorFlags errorFlags) {
+        this.errorFlags = errorFlags;
     }
 }

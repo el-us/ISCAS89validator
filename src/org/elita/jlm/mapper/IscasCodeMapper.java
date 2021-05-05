@@ -3,77 +3,76 @@ package org.elita.jlm.mapper;
 
 import org.elita.jlm.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import static org.elita.jlm.IscasFileReader.readIscasFile;
 
 public class IscasCodeMapper {
 
-    private SystemModel systemModel = new SystemModel();
-    private String charIndex;
+    private static final String INPUT = "INPUT";
+    private static final String OUTPUT = "OUTPUT";
+    private final SystemModel systemModel = new SystemModel();
+    private List<String> iscasCodelineList;
+    private int currentlineLine;
 
 
     public void mapIscasCode(String fileName) {
-        String iscasCode = readIscasFile(fileName);
-
-        for (int i = 0; i < iscasCode.length(); i++) {
-            i = skipToNextLineIfEOL(iscasCode, i);
-            i = skipSpaces(iscasCode, i);
-            i = skipHashedLines(iscasCode, i);
-            i = skipSpaces(iscasCode, i);
-            i = mapInputOutput("INPUT", iscasCode, i);
-            i = mapInputOutput("OUTPUT", iscasCode, i);
-        }
+        iscasCodelineList = readIscasFile(fileName);
+        iscasCodelineList.stream()
+                .map(this::skipEmptyLines)
+                .filter(Objects::nonNull)
+                .map(this::removeInnerSpaces)
+                .filter(this::ignoreHashedLines)
+                .map(this::mapInputs)
+                .map(this::mapOutputs)
+                .map(this::removeInnerSpaces);
     }
 
-    private static int skipToNextLineIfEOL(final String iscasCode, int charIndex) {
-        return iscasCode.charAt(charIndex) == '\n' ? ++charIndex : charIndex;
 
-    }
-
-    private static int skipToNextLine(final String iscasCode, int charIndex) {
-        do {
-            charIndex++;
-        } while (iscasCode.charAt(charIndex) != '\n');
-        return ++charIndex;
-    }
-
-    private static int skipSpaces(final String iscasCode, int charIndex) {
-        while (iscasCode.charAt(charIndex) == ' ') {
+    private String skipEmptyLines(final String line) {
+        int charIndex = 0;
+        while (line.charAt(charIndex) == ' ') {
             charIndex++;
         }
-        return charIndex;
+        return charIndex < line.length() - 1 ? line.substring(charIndex) : null;
     }
 
-    private static int skipHashedLines(final String iscasCode, int charIndex) {
-        if(iscasCode.charAt(charIndex) == '#') {
-            charIndex = skipToNextLine(iscasCode, charIndex);
+    private Boolean ignoreHashedLines(final String line) {
+        return !line.startsWith("#");
+
+    }
+
+    private String mapInputs(final String line) {
+        List<String> splitedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        splitedInputDeclaration.get(0);
+        if(splitedInputDeclaration.get(0).equals(INPUT)) {
+            systemModel.getInputList().add(splitedInputDeclaration.get(1));
+        } else {
+            systemModel.getErrorFlags().setNoInputs(true);
         }
-        return charIndex;
+        return line;
     }
 
-    private static StringWithBeginingAndEnd readString(final String iscasCode, int charIndex) {
+    private String mapOutputs(final String line) {
+        List<String> splitedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        splitedInputDeclaration.get(0);
+        if(splitedInputDeclaration.get(0).equals(OUTPUT)) {
+            systemModel.getOutputList().add(splitedInputDeclaration.get(1));
+        } else {
+            systemModel.getErrorFlags().setNoOutputs(true);
+        }
+        return line;
+    }
+
+    private String removeInnerSpaces(final String line) {
         StringBuilder stringBuilder = new StringBuilder();
-        char character = iscasCode.charAt(charIndex);
-        while (character > 'A' && character < 'Z' || character > 'a' && character < 'z' || character > '0' && character < '9') {
-            stringBuilder.append(character);
-            character = iscasCode.charAt(++charIndex);
-        }
-        return new StringWithBeginingAndEnd(stringBuilder.toString(), charIndex);
-    }
-
-    private int mapInputOutput(final String inputOrOutput, final String iscasCode, int charIndex) {
-        StringWithBeginingAndEnd stringWithBeginingAndEnd = readString(iscasCode, charIndex);
-        while (stringWithBeginingAndEnd.getString().equals(inputOrOutput)) {
-            if (iscasCode.charAt(charIndex) == '(') {
-                stringWithBeginingAndEnd = mapInput(iscasCode, charIndex);
+        for (int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) != ' ') {
+                stringBuilder.append(line.charAt(i));
             }
         }
-        return stringWithBeginingAndEnd.getBeginning();
-    }
-
-    private StringWithBeginingAndEnd mapInput(String iscasCode, int charIndex) {
-        StringWithBeginingAndEnd stringWithBeginingAndEnd = readString(iscasCode, charIndex);
-        systemModel.getInputList().add(stringWithBeginingAndEnd.getString());
-        charIndex = skipToNextLine(iscasCode, stringWithBeginingAndEnd.getEndIndex());
-        return readString(iscasCode, charIndex);
+        return stringBuilder.toString();
     }
 }
