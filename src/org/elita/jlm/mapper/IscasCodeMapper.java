@@ -13,6 +13,9 @@ public class IscasCodeMapper {
 
     private static final String INPUT = "INPUT";
     private static final String OUTPUT = "OUTPUT";
+    private static final String SPACE = " ";
+    private static final String HASH = "#";
+    private static final String END_OF_LINE = "\n";
     private final SystemModel systemModel = new SystemModel();
     private List<String> iscasCodelineList;
     private int currentlineLine;
@@ -21,27 +24,21 @@ public class IscasCodeMapper {
     public void mapIscasCode(String fileName) {
         iscasCodelineList = readIscasFile(fileName);
         iscasCodelineList.stream()
-                .map(this::skipEmptyLines)
-                .filter(Objects::nonNull)
-                .map(this::removeInnerSpaces)
+                .map(this::removeSpaces)
+                .filter(this::skipEmptyLines)
                 .filter(this::ignoreHashedLines)
                 .map(this::mapInputs)
                 .map(this::mapOutputs)
-                .map(this::removeInnerSpaces);
+                .map(this::removeSpaces);
     }
 
 
-    private String skipEmptyLines(final String line) {
-        int charIndex = 0;
-        while (line.charAt(charIndex) == ' ') {
-            charIndex++;
-        }
-        return charIndex < line.length() - 1 ? line.substring(charIndex) : null;
+    private Boolean skipEmptyLines(final String line) {
+        return !line.isBlank();
     }
 
     private Boolean ignoreHashedLines(final String line) {
-        return !line.startsWith("#");
-
+        return !line.startsWith(HASH);
     }
 
     private String mapInputs(final String line) {
@@ -56,17 +53,17 @@ public class IscasCodeMapper {
     }
 
     private String mapOutputs(final String line) {
-        List<String> splitedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
-        splitedInputDeclaration.get(0);
-        if(splitedInputDeclaration.get(0).equals(OUTPUT)) {
-            systemModel.getOutputList().add(splitedInputDeclaration.get(1));
+        List<String> splitedOutputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        splitedOutputDeclaration.get(0);
+        if(splitedOutputDeclaration.get(0).equals(OUTPUT)) {
+            systemModel.getOutputList().add(splitedOutputDeclaration.get(1));
         } else {
             systemModel.getErrorFlags().setNoOutputs(true);
         }
         return line;
     }
 
-    private String removeInnerSpaces(final String line) {
+    private String removeSpaces(final String line) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
             if(line.charAt(i) != ' ') {
