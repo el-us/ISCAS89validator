@@ -7,6 +7,7 @@ import org.elita.jlm.logicElements.impl.Output;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
@@ -22,12 +23,17 @@ public class IscasCodeMapper {
 
     public SystemModel mapIscasCode(String fileName) {
         List<String> iscasCodelineList = readIscasFile(fileName);
-        iscasCodelineList.stream()
+
+        long numberOfParsedLines = iscasCodelineList.stream()
                 .map(this::removeSpaces)
                 .filter(this::skipEmptyLines)
                 .filter(this::ignoreHashedLines)
                 .map(this::mapInputs)
-                .map(this::mapOutputs);
+                .map(this::mapOutputs)
+                .count();
+
+        System.out.println("Successfully parsed " + numberOfParsedLines + " logic elements from file: " + fileName);
+
         return systemModel;
     }
 
