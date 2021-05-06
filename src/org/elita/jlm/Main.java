@@ -10,9 +10,8 @@ public class Main {
         IscasCodeMapper iscasCodeMapper = new IscasCodeMapper();
         SystemModel systemModel = iscasCodeMapper.mapIscasCode("s27.bench");
 
-        systemModel.getLogicElements().stream()
-                .map(LogicElement::getLabel)
-                .forEach(System.out::println);
+        systemModel.getLogicElements()
+                .forEach(element -> System.out.println(element.getType() + ": " + element.getLabel()));
 
     }
 }
