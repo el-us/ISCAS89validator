@@ -1,13 +1,17 @@
 package org.elita.jlm.mapper;
 
 
-import org.elita.jlm.*;
+import org.elita.jlm.SystemModel;
+import org.elita.jlm.logicElements.LogicElement;
+import org.elita.jlm.logicElements.LogicElementsData;
+import org.elita.jlm.logicElements.impl.And;
 import org.elita.jlm.logicElements.impl.Input;
 import org.elita.jlm.logicElements.impl.Output;
 
+import java.lang.annotation.ElementType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
@@ -38,6 +42,16 @@ public class IscasCodeMapper {
     }
 
 
+    private String removeSpaces(final String line) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) != ' ') {
+                stringBuilder.append(line.charAt(i));
+            }
+        }
+        return stringBuilder.toString();
+    }
+
     private Boolean skipEmptyLines(final String line) {
         return !line.isBlank();
     }
@@ -47,30 +61,58 @@ public class IscasCodeMapper {
     }
 
     private String mapInputs(final String line) {
-        List<String> splitedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
-        if(splitedInputDeclaration.get(0).equals(INPUT)) {
-            Input input = new Input(splitedInputDeclaration.get(1));
+        List<String> splittedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        if (splittedInputDeclaration.get(0).equals(INPUT)) {
+            Input input = new Input(splittedInputDeclaration.get(1));
             systemModel.getLogicElements().add(input);
         }
         return line;
     }
 
     private String mapOutputs(final String line) {
-        List<String> splitedOutputDeclaration = Arrays.asList(line.split("[(]|[)]"));
-        if(splitedOutputDeclaration.get(0).equals(OUTPUT)) {
-            Output output = new Output(splitedOutputDeclaration.get(1));
+        List<String> splittedOutputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        if (splittedOutputDeclaration.get(0).equals(OUTPUT)) {
+            Output output = new Output(splittedOutputDeclaration.get(1));
             systemModel.getLogicElements().add(output);
         }
         return line;
     }
 
-    private String removeSpaces(final String line) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < line.length(); i++) {
-            if(line.charAt(i) != ' ') {
-                stringBuilder.append(line.charAt(i));
-            }
+    private String mapLogicGates(final String line) {
+        List<String> splittedGatesDeclaration = Arrays.asList(line.split("[(]|[)]|[=]|[,]"));
+        if (isNotInputAndOutput(splittedGatesDeclaration)) {
+
         }
-        return stringBuilder.toString();
+    }
+
+    private boolean isNotInputAndOutput(List<String> splittedGatesDeclaration) {
+        return !splittedGatesDeclaration.get(0).equals(INPUT) || !splittedGatesDeclaration.get(0).equals(OUTPUT);
+    }
+
+    private static String mapLogicGates(final List<String> splittedGatesDeclaration) {
+        String gateLabel = splittedGatesDeclaration.get(0);
+        String gateType = splittedGatesDeclaration.get(1);
+        List<LogicElement> =
+
+        switch (gateType) {
+            case LogicElementsData.AND_TYPE:
+                And and = new And(gateLabel, );
+        }
+    }
+
+    private List<LogicElement> getInputElements(List<String> splittedGatesDeclaration) {
+        List<String> gatesInputStrings = extractGateInputsStrings(splittedGatesDeclaration);
+        List<LogicElement> gateInputs;
+        gatesInputStrings.stream()
+                .map(gateInputString -> systemModel.getLogicElements().stream()
+                        .filter(logicElement -> logicElement.getLabel().equals(gateInputString)))
+
+    }
+
+    private List<String> extractGateInputsStrings(List<String> splittedGatesDeclaration) {
+        List<String> gateInputStrings = new ArrayList<>(splittedGatesDeclaration);
+        gateInputStrings.remove(0);
+        gateInputStrings.remove(1);
+        return gateInputStrings;
     }
 }
