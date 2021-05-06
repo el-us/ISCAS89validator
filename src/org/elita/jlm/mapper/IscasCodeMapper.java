@@ -2,12 +2,13 @@ package org.elita.jlm.mapper;
 
 
 import org.elita.jlm.*;
+import org.elita.jlm.logicElements.impl.Input;
+import org.elita.jlm.logicElements.impl.Output;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-import static org.elita.jlm.IscasFileReader.readIscasFile;
+import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
 public class IscasCodeMapper {
 
@@ -17,19 +18,17 @@ public class IscasCodeMapper {
     private static final String HASH = "#";
     private static final String END_OF_LINE = "\n";
     private final SystemModel systemModel = new SystemModel();
-    private List<String> iscasCodelineList;
-    private int currentlineLine;
 
 
-    public void mapIscasCode(String fileName) {
-        iscasCodelineList = readIscasFile(fileName);
+    public SystemModel mapIscasCode(String fileName) {
+        List<String> iscasCodelineList = readIscasFile(fileName);
         iscasCodelineList.stream()
                 .map(this::removeSpaces)
                 .filter(this::skipEmptyLines)
                 .filter(this::ignoreHashedLines)
                 .map(this::mapInputs)
-                .map(this::mapOutputs)
-                .map(this::removeSpaces);
+                .map(this::mapOutputs);
+        return systemModel;
     }
 
 
@@ -43,22 +42,18 @@ public class IscasCodeMapper {
 
     private String mapInputs(final String line) {
         List<String> splitedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
-        splitedInputDeclaration.get(0);
         if(splitedInputDeclaration.get(0).equals(INPUT)) {
-            systemModel.getInputList().add(splitedInputDeclaration.get(1));
-        } else {
-            systemModel.getErrorFlags().setNoInputs(true);
+            Input input = new Input(splitedInputDeclaration.get(1));
+            systemModel.getLogicElements().add(input);
         }
         return line;
     }
 
     private String mapOutputs(final String line) {
         List<String> splitedOutputDeclaration = Arrays.asList(line.split("[(]|[)]"));
-        splitedOutputDeclaration.get(0);
         if(splitedOutputDeclaration.get(0).equals(OUTPUT)) {
-            systemModel.getOutputList().add(splitedOutputDeclaration.get(1));
-        } else {
-            systemModel.getErrorFlags().setNoOutputs(true);
+            Output output = new Output(splitedOutputDeclaration.get(1));
+            systemModel.getLogicElements().add(output);
         }
         return line;
     }

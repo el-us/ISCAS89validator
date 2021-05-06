@@ -1,4 +1,4 @@
-package org.elita.jlm;
+package org.elita.jlm.mapper;
 
 import java.io.File;
 import java.io.FileNotFoundException;

@@ -1,48 +1,26 @@
 package org.elita.jlm;
 
-import org.elita.jlm.gates.Gate;
+import org.elita.jlm.logicElements.LogicElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SystemModel {
 
+    private List<LogicElement> logicElements;
     private ErrorFlags errorFlags;
-    private List<String> inputList;
-    private List<String> outputList;
-    private List<Gate> gates;
-    private List<Labels> labels;
 
-
-    public List<String> getInputList() {
-        return inputList;
+    public SystemModel() {
+        this.logicElements = new ArrayList<>();
+        this.errorFlags = new ErrorFlags();
     }
 
-    public void setInputList(List<String> inputList) {
-        this.inputList = inputList;
+    public List<LogicElement> getLogicElements() {
+        return logicElements;
     }
 
-    public List<String> getOutputList() {
-        return outputList;
-    }
-
-    public void setOutputList(List<String> outputList) {
-        this.outputList = outputList;
-    }
-
-    public List<Gate> getGates() {
-        return gates;
-    }
-
-    public void setGates(List<Gate> gates) {
-        this.gates = gates;
-    }
-
-    public List<Labels> getLabels() {
-        return labels;
-    }
-
-    public void setLabels(List<Labels> labels) {
-        this.labels = labels;
+    public void setLogicElements(List<LogicElement> logicElements) {
+        this.logicElements = logicElements;
     }
 
     public ErrorFlags getErrorFlags() {
