@@ -5,15 +5,15 @@ import org.elita.jlm.logicElements.LogicElementsData;
 
 import java.util.List;
 
-public class And implements LogicElement {
+public class Dff implements LogicElement {
 
     private final String label;
-    private List<String> inputLabels;
-    private List<LogicElement> inputs;
+    private String  inputLabel;
+    private LogicElement input;
 
-    public And(String label, List<String> inputLabels) {
+    public Dff(String label, String inputLabel) {
         this.label = label;
-        this.inputLabels = inputLabels;
+        this.inputLabel = inputLabel;
     }
 
     @Override
@@ -23,16 +23,16 @@ public class And implements LogicElement {
 
     @Override
     public List<LogicElement> getInputs() {
-        return inputs;
+        return List.of(input);
     }
 
     @Override
     public String getType() {
-        return LogicElementsData.AND;
+        return LogicElementsData.DFF;
     }
 
     @Override
     public List<String> getInputLabels() {
-        return inputLabels;
+        return List.of(inputLabel);
     }
 }

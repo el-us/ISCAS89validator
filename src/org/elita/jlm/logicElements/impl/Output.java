@@ -30,7 +30,7 @@ public class Output implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.OUTPUT_TYPE;
+        return LogicElementsData.OUTPUT;
     }
     @Override
     public List<String> getInputLabels() {

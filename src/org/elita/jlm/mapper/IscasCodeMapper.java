@@ -98,17 +98,26 @@ public class IscasCodeMapper {
         List<String> inputLabels = extractGateInputsStrings(splittedGateDeclaration);
 
         switch (gateType) {
-            case LogicElementsData.AND_TYPE:
+            case LogicElementsData.AND:
                 systemModel.getLogicElements().add(new And(gateLabel, inputLabels));
                 break;
-            case LogicElementsData.OR_TYPE:
+            case LogicElementsData.OR:
                 systemModel.getLogicElements().add(new Or(gateLabel, inputLabels));
                 break;
-            case LogicElementsData.NOT_TYPE:
+            case LogicElementsData.NOT:
                 systemModel.getLogicElements().add(new Not(gateLabel, inputLabels.get(0)));
                 break;
-            case LogicElementsData.XOR_TYPE:
+            case LogicElementsData.XOR:
                 systemModel.getLogicElements().add(new Xor(gateLabel, inputLabels));
+                break;
+            case LogicElementsData.NAND:
+                systemModel.getLogicElements().add(new Nand(gateLabel, inputLabels));
+                break;
+            case LogicElementsData.NOR:
+                systemModel.getLogicElements().add(new Nor(gateLabel, inputLabels));
+                break;
+            case LogicElementsData.DFF:
+                systemModel.getLogicElements().add(new Dff(gateLabel, inputLabels.get(0)));
         }
     }
 

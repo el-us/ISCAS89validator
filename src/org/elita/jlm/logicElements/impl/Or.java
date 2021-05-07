@@ -28,7 +28,7 @@ public class Or implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.OR_TYPE;
+        return LogicElementsData.OR;
     }
 
     @Override

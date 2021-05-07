@@ -25,7 +25,7 @@ public class Input implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.INPUT_TYPE;
+        return LogicElementsData.INPUT;
     }
 
     @Override

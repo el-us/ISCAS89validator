@@ -28,7 +28,7 @@ public class Not implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.NOT_TYPE;
+        return LogicElementsData.NOT;
     }
 
     @Override

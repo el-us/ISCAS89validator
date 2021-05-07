@@ -28,7 +28,7 @@ public class Xor implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.XOR_TYPE;
+        return LogicElementsData.XOR;
     }
 
     @Override
