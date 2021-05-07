@@ -8,11 +8,12 @@ import java.util.List;
 public class Xor implements LogicElement {
 
     private final String label;
-    private final List<LogicElement> inputs;
+    private List<String> inputLabels;
+    private List<LogicElement> inputs;
 
-    public Xor(String label, List<LogicElement> inputs) {
+    public Xor(String label, List<String> inputsLabels) {
         this.label = label;
-        this.inputs = inputs;
+        this.inputLabels = inputsLabels;
     }
 
     @Override
@@ -28,5 +29,10 @@ public class Xor implements LogicElement {
     @Override
     public String getType() {
         return LogicElementsData.XOR_TYPE;
+    }
+
+    @Override
+    public List<String> getInputLabels() {
+        return inputLabels;
     }
 }

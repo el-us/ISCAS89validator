@@ -7,4 +7,5 @@ public interface LogicElement {
     String getType();
     String getLabel();
     List<LogicElement> getInputs();
+    List<String> getInputLabels();
 }

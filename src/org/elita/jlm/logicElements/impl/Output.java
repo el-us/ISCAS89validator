@@ -32,4 +32,8 @@ public class Output implements LogicElement {
     public String getType() {
         return LogicElementsData.OUTPUT_TYPE;
     }
+    @Override
+    public List<String> getInputLabels() {
+        return null;
+    }
 }

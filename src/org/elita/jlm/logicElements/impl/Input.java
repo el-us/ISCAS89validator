@@ -27,4 +27,9 @@ public class Input implements LogicElement {
     public String getType() {
         return LogicElementsData.INPUT_TYPE;
     }
+
+    @Override
+    public List<String> getInputLabels() {
+        return null;
+    }
 }

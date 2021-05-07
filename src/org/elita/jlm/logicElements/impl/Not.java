@@ -8,11 +8,12 @@ import java.util.List;
 public class Not implements LogicElement {
 
     private final String label;
-    private final LogicElement input;
+    private String  inputLabel;
+    private LogicElement input;
 
-    public Not(String label, LogicElement input) {
+    public Not(String label, String inputLabel) {
         this.label = label;
-        this.input = input;
+        this.inputLabel = inputLabel;
     }
 
     @Override
@@ -28,5 +29,10 @@ public class Not implements LogicElement {
     @Override
     public String getType() {
         return LogicElementsData.NOT_TYPE;
+    }
+
+    @Override
+    public List<String> getInputLabels() {
+        return List.of(inputLabel);
     }
 }

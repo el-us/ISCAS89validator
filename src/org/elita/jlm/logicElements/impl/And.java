@@ -8,11 +8,12 @@ import java.util.List;
 public class And implements LogicElement {
 
     private final String label;
-    private final List<LogicElement> inputs;
+    private List<String> inputLabels;
+    private List<LogicElement> inputs;
 
-    public And(String label, List<LogicElement> inputs) {
+    public And(String label, List<String> inputLabels) {
         this.label = label;
-        this.inputs = inputs;
+        this.inputLabels = inputLabels;
     }
 
     @Override
@@ -28,5 +29,10 @@ public class And implements LogicElement {
     @Override
     public String getType() {
         return LogicElementsData.AND_TYPE;
+    }
+
+    @Override
+    public List<String> getInputLabels() {
+        return inputLabels;
     }
 }

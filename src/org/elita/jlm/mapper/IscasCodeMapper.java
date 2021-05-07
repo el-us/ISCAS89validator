@@ -2,16 +2,13 @@ package org.elita.jlm.mapper;
 
 
 import org.elita.jlm.SystemModel;
-import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
-import org.elita.jlm.logicElements.impl.And;
-import org.elita.jlm.logicElements.impl.Input;
-import org.elita.jlm.logicElements.impl.Output;
+import org.elita.jlm.logicElements.impl.*;
 
-import java.lang.annotation.ElementType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
@@ -33,7 +30,10 @@ public class IscasCodeMapper {
                 .filter(this::skipEmptyLines)
                 .filter(this::ignoreHashedLines)
                 .map(this::mapInputs)
+                .filter(Objects::nonNull)
                 .map(this::mapOutputs)
+                .filter(Objects::nonNull)
+                .map(this::mapLogicGate)
                 .count();
 
         System.out.println("Successfully parsed " + numberOfParsedLines + " logic elements from file: " + fileName);
@@ -65,6 +65,7 @@ public class IscasCodeMapper {
         if (splittedInputDeclaration.get(0).equals(INPUT)) {
             Input input = new Input(splittedInputDeclaration.get(1));
             systemModel.getLogicElements().add(input);
+            return null;
         }
         return line;
     }
@@ -74,42 +75,50 @@ public class IscasCodeMapper {
         if (splittedOutputDeclaration.get(0).equals(OUTPUT)) {
             Output output = new Output(splittedOutputDeclaration.get(1));
             systemModel.getLogicElements().add(output);
+            return null;
         }
         return line;
     }
 
-    private String mapLogicGates(final String line) {
-        List<String> splittedGatesDeclaration = Arrays.asList(line.split("[(]|[)]|[=]|[,]"));
-        if (isNotInputAndOutput(splittedGatesDeclaration)) {
-
+    private String mapLogicGate(final String line) {
+        List<String> splittedGateDeclaration = Arrays.asList(line.split("[(]|[)]|[=]|[,]"));
+        if (isNotInputAndOutput(splittedGateDeclaration)) {
+            mapLogicGate(splittedGateDeclaration);
         }
+        return line;
     }
 
     private boolean isNotInputAndOutput(List<String> splittedGatesDeclaration) {
         return !splittedGatesDeclaration.get(0).equals(INPUT) || !splittedGatesDeclaration.get(0).equals(OUTPUT);
     }
 
-    private static String mapLogicGates(final List<String> splittedGatesDeclaration) {
-        String gateLabel = splittedGatesDeclaration.get(0);
-        String gateType = splittedGatesDeclaration.get(1);
-        List<LogicElement> =
+    private void mapLogicGate(final List<String> splittedGateDeclaration) {
+        String gateLabel = splittedGateDeclaration.get(0);
+        String gateType = splittedGateDeclaration.get(1);
+        List<String> inputLabels = extractGateInputsStrings(splittedGateDeclaration);
 
         switch (gateType) {
             case LogicElementsData.AND_TYPE:
-                And and = new And(gateLabel, );
+                systemModel.getLogicElements().add(new And(gateLabel, inputLabels));;
+            case LogicElementsData.OR_TYPE:
+                systemModel.getLogicElements().add(new Or(gateLabel, inputLabels));;
+            case LogicElementsData.NOT_TYPE:
+                systemModel.getLogicElements().add(new Not(gateLabel, inputLabels.get(0)));
+            case LogicElementsData.XOR_TYPE:
+                systemModel.getLogicElements().add(new Xor(gateLabel, inputLabels));
         }
     }
 
-    private List<LogicElement> getInputElements(List<String> splittedGatesDeclaration) {
-        List<String> gatesInputStrings = extractGateInputsStrings(splittedGatesDeclaration);
-        List<LogicElement> gateInputs;
-        gatesInputStrings.stream()
-                .map(gateInputString -> systemModel.getLogicElements().stream()
-                        .filter(logicElement -> logicElement.getLabel().equals(gateInputString)))
+//    private List<LogicElement> getInputElements(List<String> splittedGatesDeclaration) {
+//        List<String> gatesInputStrings = extractGateInputsStrings(splittedGatesDeclaration);
+//        List<LogicElement> gateInputs;
+//        gatesInputStrings.stream()
+//                .map(gateInputString -> systemModel.getLogicElements().stream()
+//                        .filter(logicElement -> logicElement.getLabel().equals(gateInputString)))
+//
+//    }
 
-    }
-
-    private List<String> extractGateInputsStrings(List<String> splittedGatesDeclaration) {
+    static private List<String> extractGateInputsStrings(List<String> splittedGatesDeclaration) {
         List<String> gateInputStrings = new ArrayList<>(splittedGatesDeclaration);
         gateInputStrings.remove(0);
         gateInputStrings.remove(1);
