@@ -1,6 +1,5 @@
 package org.elita.jlm;
 
-import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.mapper.IscasCodeMapper;
 
 public class Main {
@@ -11,7 +10,7 @@ public class Main {
         SystemModel systemModel = iscasCodeMapper.mapIscasCode("s27.bench");
 
         systemModel.getLogicElements()
-                .forEach(element -> System.out.println(element.getType() + ": " + element.getLabel()));
+                .forEach(element -> System.out.println(element.getLabel() + ": " + element.getType() + " inputs: " + element.getInputLabels()));
 
     }
 }
