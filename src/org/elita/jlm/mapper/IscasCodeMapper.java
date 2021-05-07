@@ -80,19 +80,19 @@ public class IscasCodeMapper {
         return line;
     }
 
-    private String mapLogicGate(final String line) {
+    private Boolean mapLogicGate(final String line) {
         List<String> splittedGateDeclaration = Arrays.asList(line.split("[(]|[)]|[=]|[,]"));
         if (isNotInputAndOutput(splittedGateDeclaration)) {
-            mapLogicGate(splittedGateDeclaration);
+            return mapLogicGate(splittedGateDeclaration);
         }
-        return line;
+        return null;
     }
 
     private boolean isNotInputAndOutput(List<String> splittedGatesDeclaration) {
         return !splittedGatesDeclaration.get(0).equals(INPUT) || !splittedGatesDeclaration.get(0).equals(OUTPUT);
     }
 
-    private void mapLogicGate(final List<String> splittedGateDeclaration) {
+    private Boolean mapLogicGate(final List<String> splittedGateDeclaration) {
         String gateLabel = splittedGateDeclaration.get(0);
         String gateType = splittedGateDeclaration.get(1);
         List<String> inputLabels = extractGateInputsStrings(splittedGateDeclaration);
@@ -100,24 +100,26 @@ public class IscasCodeMapper {
         switch (gateType) {
             case LogicElementsData.AND:
                 systemModel.getLogicElements().add(new And(gateLabel, inputLabels));
-                break;
+                return true;
             case LogicElementsData.OR:
                 systemModel.getLogicElements().add(new Or(gateLabel, inputLabels));
-                break;
+                return true;
             case LogicElementsData.NOT:
                 systemModel.getLogicElements().add(new Not(gateLabel, inputLabels.get(0)));
-                break;
+                return true;
             case LogicElementsData.XOR:
                 systemModel.getLogicElements().add(new Xor(gateLabel, inputLabels));
-                break;
+                return true;
             case LogicElementsData.NAND:
                 systemModel.getLogicElements().add(new Nand(gateLabel, inputLabels));
-                break;
+                return true;
             case LogicElementsData.NOR:
                 systemModel.getLogicElements().add(new Nor(gateLabel, inputLabels));
-                break;
+                return true;
             case LogicElementsData.DFF:
                 systemModel.getLogicElements().add(new Dff(gateLabel, inputLabels.get(0)));
+            default:
+                return false;
         }
     }
 
