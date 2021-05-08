@@ -2,13 +2,11 @@ package org.elita.jlm.mapper;
 
 
 import org.elita.jlm.SystemModel;
+import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
 import org.elita.jlm.logicElements.impl.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
@@ -16,9 +14,9 @@ public class IscasCodeMapper {
 
     private static final String INPUT = "INPUT";
     private static final String OUTPUT = "OUTPUT";
-    private static final String SPACE = " ";
     private static final String HASH = "#";
-    private static final String END_OF_LINE = "\n";
+    private static final char SPACE = ' ';
+
     private final SystemModel systemModel = new SystemModel();
 
 
@@ -34,18 +32,27 @@ public class IscasCodeMapper {
                 .map(this::mapOutputs)
                 .filter(Objects::nonNull)
                 .map(this::mapLogicGate)
+                .filter(aBoolean -> aBoolean)
                 .count();
 
         System.out.println("Successfully parsed " + numberOfParsedLines + " logic elements from file: " + fileName);
 
+        boolean allLinked = linkLogicElements();
+
+        if(allLinked) {
+            System.out.println("All element successfully linked");
+        } else {
+            System.out.println("Some errors during linking occurred");
+        }
+
+
         return systemModel;
     }
-
 
     private String removeSpaces(final String line) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < line.length(); i++) {
-            if (line.charAt(i) != ' ') {
+            if (line.charAt(i) != SPACE) {
                 stringBuilder.append(line.charAt(i));
             }
         }
@@ -105,7 +112,7 @@ public class IscasCodeMapper {
                 systemModel.getLogicElements().add(new Or(gateLabel, inputLabels));
                 return true;
             case LogicElementsData.NOT:
-                systemModel.getLogicElements().add(new Not(gateLabel, inputLabels.get(0)));
+                systemModel.getLogicElements().add(new Not(gateLabel, inputLabels));
                 return true;
             case LogicElementsData.XOR:
                 systemModel.getLogicElements().add(new Xor(gateLabel, inputLabels));
@@ -117,25 +124,61 @@ public class IscasCodeMapper {
                 systemModel.getLogicElements().add(new Nor(gateLabel, inputLabels));
                 return true;
             case LogicElementsData.DFF:
-                systemModel.getLogicElements().add(new Dff(gateLabel, inputLabels.get(0)));
+                systemModel.getLogicElements().add(new Dff(gateLabel, inputLabels));
+                return true;
             default:
                 return false;
         }
     }
 
-//    private List<LogicElement> getInputElements(List<String> splittedGatesDeclaration) {
-//        List<String> gatesInputStrings = extractGateInputsStrings(splittedGatesDeclaration);
-//        List<LogicElement> gateInputs;
-//        gatesInputStrings.stream()
-//                .map(gateInputString -> systemModel.getLogicElements().stream()
-//                        .filter(logicElement -> logicElement.getLabel().equals(gateInputString)))
-//
-//    }
+    private Boolean linkLogicElements() {
+        return systemModel.getLogicElements().stream()
+                .filter(this::isNotInput)
+                .allMatch(this::linkLogicElement);
+    }
+
+    private boolean isNotInput(LogicElement logicElement) {
+        return !logicElement.getType().equals(INPUT);
+    }
+
+    private Boolean linkLogicElement(LogicElement logicElement) {
+        return Optional.ofNullable(logicElement.getInputLabels())
+                .map(inputLabels -> inputLabels.stream()
+                .allMatch(inputLabel -> linkElementInput(logicElement, inputLabel)))
+                .orElse(handleInputLabelsNullPointer(logicElement));
+    }
+
+    private boolean isNotOutput(LogicElement logicElement) {
+        return !logicElement.getType().equals(OUTPUT);
+    }
+
+    private Boolean linkElementInput(LogicElement logicElement, String inputLabel) {
+        return systemModel.getLogicElements().stream()
+                .filter(this::isNotOutput)
+                .filter(systemLogicElement -> inputLabel.equals(systemLogicElement.getLabel()))
+                .allMatch(logicElementToAssign -> assignLogicElementToInput(logicElement, logicElementToAssign));
+    }
+
+    private Boolean assignLogicElementToInput(LogicElement logicElement, LogicElement logicElementToAssign) {
+        return Optional.ofNullable(logicElement.getInputs())
+                .map(logicElements -> logicElements.add(logicElementToAssign))
+                .orElse(handleInputNullPointer(logicElement));
+    }
 
     static private List<String> extractGateInputsStrings(List<String> splittedGatesDeclaration) {
         List<String> gateInputStrings = new ArrayList<>(splittedGatesDeclaration);
         gateInputStrings.remove(0);
         gateInputStrings.remove(0);
         return gateInputStrings;
+    }
+
+    private Boolean handleInputLabelsNullPointer(LogicElement logicElement) {
+        System.out.println("Logic element with label: " + logicElement.getLabel() + " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
+        return false;
+    }
+
+    private Boolean handleInputNullPointer(LogicElement logicElement) {
+        System.out.println("Logic element with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputLabels());
+        return false;
     }
 }

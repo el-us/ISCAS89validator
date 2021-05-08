@@ -8,12 +8,12 @@ import java.util.List;
 public class Not implements LogicElement {
 
     private final String label;
-    private String  inputLabel;
-    private LogicElement input;
+    private List<String> inputLabels;
+    private List<LogicElement> inputs;
 
-    public Not(String label, String inputLabel) {
+    public Not(String label, List<String> inputLabels) {
         this.label = label;
-        this.inputLabel = inputLabel;
+        this.inputLabels = inputLabels;
     }
 
     @Override
@@ -23,16 +23,16 @@ public class Not implements LogicElement {
 
     @Override
     public List<LogicElement> getInputs() {
-        return List.of(input);
+        return inputs;
     }
 
     @Override
     public String getType() {
-        return LogicElementsData.NOT;
+        return LogicElementsData.AND;
     }
 
     @Override
     public List<String> getInputLabels() {
-        return List.of(inputLabel);
+        return inputLabels;
     }
 }

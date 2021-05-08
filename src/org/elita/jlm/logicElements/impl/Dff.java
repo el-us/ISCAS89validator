@@ -8,12 +8,12 @@ import java.util.List;
 public class Dff implements LogicElement {
 
     private final String label;
-    private String  inputLabel;
-    private LogicElement input;
+    private List<String>  inputLabels;
+    private List<LogicElement> inputs;
 
-    public Dff(String label, String inputLabel) {
+    public Dff(String label, List<String> inputLabels) {
         this.label = label;
-        this.inputLabel = inputLabel;
+        this.inputLabels = inputLabels;
     }
 
     @Override
@@ -23,7 +23,7 @@ public class Dff implements LogicElement {
 
     @Override
     public List<LogicElement> getInputs() {
-        return List.of(input);
+        return inputs;
     }
 
     @Override
@@ -33,6 +33,6 @@ public class Dff implements LogicElement {
 
     @Override
     public List<String> getInputLabels() {
-        return List.of(inputLabel);
+        return inputLabels;
     }
 }

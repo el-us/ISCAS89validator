@@ -3,15 +3,18 @@ package org.elita.jlm.logicElements.impl;
 import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Output implements LogicElement {
 
     private final String label;
+    private List<String> inputLabels;
     private LogicElement input;
 
     public Output(String label) {
         this.label = label;
+        this.inputLabels = new ArrayList<>();
     }
 
     public void setInput(LogicElement input) {
@@ -34,6 +37,6 @@ public class Output implements LogicElement {
     }
     @Override
     public List<String> getInputLabels() {
-        return null;
+        return inputLabels;
     }
 }
