@@ -9,15 +9,21 @@ import java.util.List;
 public class Output implements LogicElement {
 
     private final String label;
+    private List<String> inputLabels;
     private List<LogicElement> inputs;
 
     public Output(String label) {
         this.label = label;
         this.inputs = new ArrayList<>();
+        this.inputLabels = new ArrayList<>();
     }
 
     public void setInput(LogicElement logicElement) {
         this.inputs = List.of(logicElement);
+    }
+
+    public void setInputLabel(String inputLabel) {
+        this.inputLabels = List.of(inputLabel);
     }
 
     @Override
@@ -37,6 +43,6 @@ public class Output implements LogicElement {
 
     @Override
     public List<String> getInputLabels() {
-        return null;
+        return inputLabels;
     }
 }

@@ -107,6 +107,7 @@ public class IscasCodeMapper {
     }
 
     private Boolean mapLogicGatesForType(String gateLabel, String gateType, List<String> inputLabels) {
+        //noinspection EnhancedSwitchMigration
         switch (gateType) {
             case LogicElementsType.AND:
                 return systemModel.getLogicElements().add(new And(gateLabel, inputLabels));
@@ -128,10 +129,9 @@ public class IscasCodeMapper {
     }
 
     private Boolean mapOutputToLogicElement(String readGateLabel) {
-        Output outputWithGivenLabel = systemModel.getOutputByLabel(readGateLabel);
-        if(outputWithGivenLabel != null) {
-            outputWithGivenLabel.setInput(systemModel.getLogicElementWithExcludedType(readGateLabel, LogicElementsType.OUTPUT));
-            return outputWithGivenLabel.getInputs().size() == 1;
+        if(systemModel.getOutputByLabel(readGateLabel) != null) {
+            systemModel.getOutputByLabel(readGateLabel).setInputLabel(readGateLabel);
+            return systemModel.getOutputByLabel(readGateLabel).getInputLabels().size() == 1;
         } else return true;
     }
 
@@ -148,7 +148,7 @@ public class IscasCodeMapper {
     private Boolean linkLogicElement(LogicElement logicElement) {
         return Optional.ofNullable(logicElement.getInputLabels())
                 .map(inputLabels -> inputLabels.stream()
-                .allMatch(inputLabel -> linkElementInput(logicElement, inputLabel)))
+                        .allMatch(inputLabel -> linkElementInput(logicElement, inputLabel)))
                 .orElse(handleInputLabelsNullPointer(logicElement));
     }
 
