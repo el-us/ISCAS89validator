@@ -1,6 +1,6 @@
 package org.elita.jlm.logicElements;
 
-public class LogicElementsData {
+public class LogicElementsType {
 
     public static final String INPUT = "INPUT";
     public static final String OUTPUT = "OUTPUT";

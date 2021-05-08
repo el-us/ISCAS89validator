@@ -1,7 +1,7 @@
 package org.elita.jlm.logicElements.impl;
 
 import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsData;
+import org.elita.jlm.logicElements.LogicElementsType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ public class Dff implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.DFF;
+        return LogicElementsType.DFF;
     }
 
     @Override

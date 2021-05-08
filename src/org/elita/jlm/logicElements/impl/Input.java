@@ -1,7 +1,7 @@
 package org.elita.jlm.logicElements.impl;
 
 import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsData;
+import org.elita.jlm.logicElements.LogicElementsType;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public class Input implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsData.INPUT;
+        return LogicElementsType.INPUT;
     }
 
     @Override

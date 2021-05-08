@@ -1,22 +1,23 @@
 package org.elita.jlm.logicElements.impl;
 
 import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsData;
+import org.elita.jlm.logicElements.LogicElementsType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Output implements LogicElement {
 
     private final String label;
-    private List<String> inputLabels;
-    private LogicElement input;
+    private List<LogicElement> inputs;
 
     public Output(String label) {
         this.label = label;
+        this.inputs = new ArrayList<>();
     }
 
-    public void setInput(LogicElement input) {
-        this.input = input;
+    public void setInput(LogicElement logicElement) {
+        this.inputs = List.of(logicElement);
     }
 
     @Override
@@ -26,15 +27,16 @@ public class Output implements LogicElement {
 
     @Override
     public List<LogicElement> getInputs() {
-        return null;
+        return inputs;
     }
 
     @Override
     public String getType() {
-        return LogicElementsData.OUTPUT;
+        return LogicElementsType.OUTPUT;
     }
+
     @Override
     public List<String> getInputLabels() {
-        return inputLabels;
+        return null;
     }
 }
