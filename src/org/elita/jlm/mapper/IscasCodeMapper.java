@@ -178,7 +178,7 @@ public class IscasCodeMapper {
     }
 
     private Boolean handleInputNullPointer(LogicElement logicElement) {
-        System.out.println("Logic element with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputLabels());
+        System.out.println("Logic element with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
         return false;
     }
 }

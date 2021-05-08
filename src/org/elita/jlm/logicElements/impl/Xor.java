@@ -3,6 +3,7 @@ package org.elita.jlm.logicElements.impl;
 import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Xor implements LogicElement {
@@ -14,6 +15,7 @@ public class Xor implements LogicElement {
     public Xor(String label, List<String> inputsLabels) {
         this.label = label;
         this.inputLabels = inputsLabels;
+        this.inputs = new ArrayList<>();
     }
 
     @Override

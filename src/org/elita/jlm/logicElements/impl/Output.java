@@ -3,7 +3,6 @@ package org.elita.jlm.logicElements.impl;
 import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Output implements LogicElement {
@@ -14,7 +13,6 @@ public class Output implements LogicElement {
 
     public Output(String label) {
         this.label = label;
-        this.inputLabels = new ArrayList<>();
     }
 
     public void setInput(LogicElement input) {

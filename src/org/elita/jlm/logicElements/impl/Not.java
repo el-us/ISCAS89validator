@@ -3,6 +3,7 @@ package org.elita.jlm.logicElements.impl;
 import org.elita.jlm.logicElements.LogicElement;
 import org.elita.jlm.logicElements.LogicElementsData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Not implements LogicElement {
@@ -14,6 +15,7 @@ public class Not implements LogicElement {
     public Not(String label, List<String> inputLabels) {
         this.label = label;
         this.inputLabels = inputLabels;
+        this.inputs = new ArrayList<>();
     }
 
     @Override
