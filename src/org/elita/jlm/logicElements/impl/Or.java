@@ -37,4 +37,12 @@ public class Or implements LogicElement {
     public List<String> getInputLabels() {
         return inputLabels;
     }
+
+    @Override
+    public String toString() {
+        return "Or{" +
+                "label='" + label + '\'' +
+                ", inputs=" + inputs +
+                '}';
+    }
 }

@@ -63,4 +63,9 @@ public class SystemModel {
                 .findFirst()
                 .orElse(null);
     }
+
+    @Override
+    public String toString() {
+        return logicElements.toString();
+    }
 }

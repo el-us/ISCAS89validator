@@ -42,8 +42,6 @@ public class IscasCodeMapper {
         } else {
             System.out.println("Some errors during linking occurred");
         }
-
-
         return systemModel;
     }
 
@@ -107,7 +105,6 @@ public class IscasCodeMapper {
     }
 
     private Boolean mapLogicGatesForType(String gateLabel, String gateType, List<String> inputLabels) {
-        //noinspection EnhancedSwitchMigration
         switch (gateType) {
             case LogicElementsType.AND:
                 return systemModel.getLogicElements().add(new And(gateLabel, inputLabels));
@@ -128,7 +125,7 @@ public class IscasCodeMapper {
         }
     }
 
-    private Boolean mapOutputToLogicElement(String readGateLabel) {
+    private boolean mapOutputToLogicElement(String readGateLabel) {
         if(systemModel.getOutputByLabel(readGateLabel) != null) {
             systemModel.getOutputByLabel(readGateLabel).setInputLabel(readGateLabel);
             return systemModel.getOutputByLabel(readGateLabel).getInputLabels().size() == 1;
@@ -145,7 +142,7 @@ public class IscasCodeMapper {
         return !logicElement.getType().equals(LogicElementsType.INPUT);
     }
 
-    private Boolean linkLogicElement(LogicElement logicElement) {
+    private boolean linkLogicElement(LogicElement logicElement) {
         return Optional.ofNullable(logicElement.getInputLabels())
                 .map(inputLabels -> inputLabels.stream()
                         .allMatch(inputLabel -> linkElementInput(logicElement, inputLabel)))
@@ -156,14 +153,14 @@ public class IscasCodeMapper {
         return !logicElement.getType().equals(LogicElementsType.OUTPUT);
     }
 
-    private Boolean linkElementInput(LogicElement logicElement, String inputLabel) {
+    private boolean linkElementInput(LogicElement logicElement, String inputLabel) {
         return systemModel.getLogicElements().stream()
                 .filter(this::isNotOutput)
                 .filter(systemLogicElement -> inputLabel.equals(systemLogicElement.getLabel()))
                 .allMatch(logicElementToAssign -> assignLogicElementToInput(logicElement, logicElementToAssign));
     }
 
-    private Boolean assignLogicElementToInput(LogicElement logicElement, LogicElement logicElementToAssign) {
+    private boolean assignLogicElementToInput(LogicElement logicElement, LogicElement logicElementToAssign) {
         return Optional.ofNullable(logicElement.getInputs())
                 .map(logicElements -> logicElements.add(logicElementToAssign))
                 .orElse(handleInputNullPointer(logicElement));
@@ -176,13 +173,17 @@ public class IscasCodeMapper {
         return gateInputStrings;
     }
 
-    private Boolean handleInputLabelsNullPointer(LogicElement logicElement) {
-        System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
-        return false;
+    private boolean handleInputLabelsNullPointer(LogicElement logicElement) {
+        if(logicElement.getInputLabels() == null) {
+            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
+            return false;
+        } else return true;
     }
 
-    private Boolean handleInputNullPointer(LogicElement logicElement) {
-        System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
-        return false;
+    private boolean handleInputNullPointer(LogicElement logicElement) {
+        if(logicElement.getInputs() == null) {
+            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
+            return false;
+        } else return true;
     }
 }

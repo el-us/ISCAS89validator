@@ -11,6 +11,5 @@ public class Main {
 
         systemModel.getLogicElements()
                 .forEach(element -> System.out.println(element.getLabel() + ": " + element.getType() + " inputs: " + element.getInputLabels()));
-
     }
 }
