@@ -1,7 +1,7 @@
-package org.elita.jlm.logicElements.impl;
+package org.elita.jlm.systemModel.logicElements.impl;
 
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 
 import java.util.List;
 

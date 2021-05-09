@@ -1,4 +1,4 @@
-package org.elita.jlm;
+package org.elita.jlm.systemModel;
 
 public class ErrorFlags {
     Boolean noInputs;

@@ -1,10 +1,10 @@
 package org.elita.jlm.mapper;
 
 
-import org.elita.jlm.SystemModel;
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
-import org.elita.jlm.logicElements.impl.*;
+import org.elita.jlm.systemModel.SystemModel;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.impl.*;
 
 import java.util.*;
 

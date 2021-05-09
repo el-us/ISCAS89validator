@@ -1,20 +1,20 @@
-package org.elita.jlm.logicElements.impl;
+package org.elita.jlm.systemModel.logicElements.impl;
 
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dff implements LogicElement {
+public class Xor implements LogicElement {
 
     private final String label;
-    private List<String>  inputLabels;
+    private List<String> inputLabels;
     private List<LogicElement> inputs;
 
-    public Dff(String label, List<String> inputLabels) {
+    public Xor(String label, List<String> inputsLabels) {
         this.label = label;
-        this.inputLabels = inputLabels;
+        this.inputLabels = inputsLabels;
         this.inputs = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class Dff implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsType.DFF;
+        return LogicElementsType.XOR;
     }
 
     @Override

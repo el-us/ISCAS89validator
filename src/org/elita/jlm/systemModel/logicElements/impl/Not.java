@@ -1,20 +1,20 @@
-package org.elita.jlm.logicElements.impl;
+package org.elita.jlm.systemModel.logicElements.impl;
 
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Nor implements LogicElement {
+public class Not implements LogicElement {
 
     private final String label;
-    private  List<String> inputLabels;
-    private  List<LogicElement> inputs;
+    private List<String> inputLabels;
+    private List<LogicElement> inputs;
 
-    public Nor(String label, List<String> inputsLabels) {
+    public Not(String label, List<String> inputLabels) {
         this.label = label;
-        this.inputLabels = inputsLabels;
+        this.inputLabels = inputLabels;
         this.inputs = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class Nor implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsType.NOR;
+        return LogicElementsType.AND;
     }
 
     @Override

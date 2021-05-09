@@ -1,4 +1,4 @@
-package org.elita.jlm.logicElements;
+package org.elita.jlm.systemModel.logicElements;
 
 public class LogicElementsType {
 

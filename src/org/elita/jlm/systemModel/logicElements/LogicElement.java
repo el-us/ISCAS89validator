@@ -1,4 +1,4 @@
-package org.elita.jlm.logicElements;
+package org.elita.jlm.systemModel.logicElements;
 
 import java.util.List;
 

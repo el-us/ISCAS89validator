@@ -1,18 +1,18 @@
-package org.elita.jlm.logicElements.impl;
+package org.elita.jlm.systemModel.logicElements.impl;
 
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Not implements LogicElement {
+public class Nand implements LogicElement {
 
     private final String label;
     private List<String> inputLabels;
     private List<LogicElement> inputs;
 
-    public Not(String label, List<String> inputLabels) {
+    public Nand(String label, List<String> inputLabels) {
         this.label = label;
         this.inputLabels = inputLabels;
         this.inputs = new ArrayList<>();
@@ -30,7 +30,7 @@ public class Not implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsType.AND;
+        return LogicElementsType.NAND;
     }
 
     @Override

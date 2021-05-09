@@ -1,8 +1,8 @@
-package org.elita.jlm;
+package org.elita.jlm.systemModel;
 
-import org.elita.jlm.logicElements.LogicElement;
-import org.elita.jlm.logicElements.LogicElementsType;
-import org.elita.jlm.logicElements.impl.Output;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.impl.Output;
 
 import java.util.ArrayList;
 import java.util.List;
