@@ -2,8 +2,9 @@ package org.elita.jlm;
 
 import org.elita.jlm.mapper.IscasCodeMapper;
 import org.elita.jlm.systemModel.SystemModel;
+import org.elita.jlm.validator.*;
 
-public class Main {
+public class Application {
 
     public static void main(String ... args) {
 
@@ -12,5 +13,9 @@ public class Main {
 
         systemModel.getLogicElements()
                 .forEach(element -> System.out.println(element.getLabel() + ": " + element.getType() + " inputs: " + element.getInputLabels()));
+
+        ModelValidator modelValidator = new ModelValidator(systemModel);
+        modelValidator.validateModel();
+
     }
 }
