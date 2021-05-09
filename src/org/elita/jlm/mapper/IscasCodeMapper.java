@@ -1,79 +1,189 @@
 package org.elita.jlm.mapper;
 
 
-import org.elita.jlm.*;
+import org.elita.jlm.systemModel.SystemModel;
+import org.elita.jlm.systemModel.logicElements.LogicElement;
+import org.elita.jlm.systemModel.logicElements.LogicElementsType;
+import org.elita.jlm.systemModel.logicElements.impl.*;
 
-import static org.elita.jlm.IscasFileReader.readIscasFile;
+import java.util.*;
+
+import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
 
 public class IscasCodeMapper {
 
-    private SystemModel systemModel = new SystemModel();
-    private String charIndex;
+    private static final String HASH = "#";
+    private static final char SPACE = ' ';
+
+    private final SystemModel systemModel = new SystemModel();
 
 
-    public void mapIscasCode(String fileName) {
-        String iscasCode = readIscasFile(fileName);
+    public SystemModel mapIscasCode(String fileName) {
+        List<String> iscasCodelineList = readIscasFile(fileName);
 
-        for (int i = 0; i < iscasCode.length(); i++) {
-            i = skipToNextLineIfEOL(iscasCode, i);
-            i = skipSpaces(iscasCode, i);
-            i = skipHashedLines(iscasCode, i);
-            i = skipSpaces(iscasCode, i);
-            i = mapInputOutput("INPUT", iscasCode, i);
-            i = mapInputOutput("OUTPUT", iscasCode, i);
+        long numberOfParsedLines = iscasCodelineList.stream()
+                .map(this::removeSpaces)
+                .filter(this::skipEmptyLines)
+                .filter(this::ignoreHashedLines)
+                .map(this::mapInputs)
+                .filter(Objects::nonNull)
+                .map(this::mapOutputs)
+                .filter(Objects::nonNull)
+                .map(this::mapLogicGate)
+                .filter(aBoolean -> aBoolean)
+                .count();
+
+        System.out.println("Successfully parsed " + numberOfParsedLines + " logic elements from file: " + fileName);
+
+        boolean allLinked = linkLogicElements();
+
+        if(allLinked) {
+            System.out.println("All element successfully linked");
+        } else {
+            System.out.println("Some errors during linking occurred");
         }
+        return systemModel;
     }
 
-    private static int skipToNextLineIfEOL(final String iscasCode, int charIndex) {
-        return iscasCode.charAt(charIndex) == '\n' ? ++charIndex : charIndex;
-
-    }
-
-    private static int skipToNextLine(final String iscasCode, int charIndex) {
-        do {
-            charIndex++;
-        } while (iscasCode.charAt(charIndex) != '\n');
-        return ++charIndex;
-    }
-
-    private static int skipSpaces(final String iscasCode, int charIndex) {
-        while (iscasCode.charAt(charIndex) == ' ') {
-            charIndex++;
-        }
-        return charIndex;
-    }
-
-    private static int skipHashedLines(final String iscasCode, int charIndex) {
-        if(iscasCode.charAt(charIndex) == '#') {
-            charIndex = skipToNextLine(iscasCode, charIndex);
-        }
-        return charIndex;
-    }
-
-    private static StringWithBeginingAndEnd readString(final String iscasCode, int charIndex) {
+    private String removeSpaces(final String line) {
         StringBuilder stringBuilder = new StringBuilder();
-        char character = iscasCode.charAt(charIndex);
-        while (character > 'A' && character < 'Z' || character > 'a' && character < 'z' || character > '0' && character < '9') {
-            stringBuilder.append(character);
-            character = iscasCode.charAt(++charIndex);
-        }
-        return new StringWithBeginingAndEnd(stringBuilder.toString(), charIndex);
-    }
-
-    private int mapInputOutput(final String inputOrOutput, final String iscasCode, int charIndex) {
-        StringWithBeginingAndEnd stringWithBeginingAndEnd = readString(iscasCode, charIndex);
-        while (stringWithBeginingAndEnd.getString().equals(inputOrOutput)) {
-            if (iscasCode.charAt(charIndex) == '(') {
-                stringWithBeginingAndEnd = mapInput(iscasCode, charIndex);
+        for (int i = 0; i < line.length(); i++) {
+            if (line.charAt(i) != SPACE) {
+                stringBuilder.append(line.charAt(i));
             }
         }
-        return stringWithBeginingAndEnd.getBeginning();
+        return stringBuilder.toString();
     }
 
-    private StringWithBeginingAndEnd mapInput(String iscasCode, int charIndex) {
-        StringWithBeginingAndEnd stringWithBeginingAndEnd = readString(iscasCode, charIndex);
-        systemModel.getInputList().add(stringWithBeginingAndEnd.getString());
-        charIndex = skipToNextLine(iscasCode, stringWithBeginingAndEnd.getEndIndex());
-        return readString(iscasCode, charIndex);
+    private Boolean skipEmptyLines(final String line) {
+        return !line.isBlank();
+    }
+
+    private Boolean ignoreHashedLines(final String line) {
+        return !line.startsWith(HASH);
+    }
+
+    private String mapInputs(final String line) {
+        List<String> splittedInputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        if (splittedInputDeclaration.get(0).equals(LogicElementsType.INPUT)) {
+            Input input = new Input(splittedInputDeclaration.get(1));
+            systemModel.getLogicElements().add(input);
+            return null;
+        }
+        return line;
+    }
+
+    private String mapOutputs(final String line) {
+        List<String> splittedOutputDeclaration = Arrays.asList(line.split("[(]|[)]"));
+        if (splittedOutputDeclaration.get(0).equals(LogicElementsType.OUTPUT)) {
+            Output output = new Output(splittedOutputDeclaration.get(1));
+            systemModel.getLogicElements().add(output);
+            return null;
+        }
+        return line;
+    }
+
+    private Boolean mapLogicGate(final String line) {
+        List<String> splittedGateDeclaration = Arrays.asList(line.split("[(]|[)]|[=]|[,]"));
+        if (isNotInputAndOutput(splittedGateDeclaration)) {
+            return mapLogicGate(splittedGateDeclaration);
+        }
+        return null;
+    }
+
+    private boolean isNotInputAndOutput(List<String> splittedGatesDeclaration) {
+        return !splittedGatesDeclaration.get(0).equals(LogicElementsType.INPUT) || !splittedGatesDeclaration.get(0).equals(LogicElementsType.OUTPUT);
+    }
+
+    private Boolean mapLogicGate(final List<String> splittedGateDeclaration) {
+        String gateLabel = splittedGateDeclaration.get(0);
+        String gateType = splittedGateDeclaration.get(1);
+        List<String> inputLabels = extractGateInputsStrings(splittedGateDeclaration);
+
+        return mapLogicGatesForType(gateLabel, gateType, inputLabels)
+                && mapOutputToLogicElement(gateLabel);
+    }
+
+    private Boolean mapLogicGatesForType(String gateLabel, String gateType, List<String> inputLabels) {
+        switch (gateType) {
+            case LogicElementsType.AND:
+                return systemModel.getLogicElements().add(new And(gateLabel, inputLabels));
+            case LogicElementsType.OR:
+                return systemModel.getLogicElements().add(new Or(gateLabel, inputLabels));
+            case LogicElementsType.NOT:
+                return systemModel.getLogicElements().add(new Not(gateLabel, inputLabels));
+            case LogicElementsType.XOR:
+                return systemModel.getLogicElements().add(new Xor(gateLabel, inputLabels));
+            case LogicElementsType.NAND:
+                return systemModel.getLogicElements().add(new Nand(gateLabel, inputLabels));
+            case LogicElementsType.NOR:
+                return systemModel.getLogicElements().add(new Nor(gateLabel, inputLabels));
+            case LogicElementsType.DFF:
+                return systemModel.getLogicElements().add(new Dff(gateLabel, inputLabels));
+            default:
+                return false;
+        }
+    }
+
+    private boolean mapOutputToLogicElement(String readGateLabel) {
+        if(systemModel.getOutputByLabel(readGateLabel) != null) {
+            systemModel.getOutputByLabel(readGateLabel).setInputLabel(readGateLabel);
+            return systemModel.getOutputByLabel(readGateLabel).getInputLabels().size() == 1;
+        } else return true;
+    }
+
+    private Boolean linkLogicElements() {
+        return systemModel.getLogicElements().stream()
+                .filter(this::isNotInput)
+                .allMatch(this::linkLogicElement);
+    }
+
+    private boolean isNotInput(LogicElement logicElement) {
+        return !logicElement.getType().equals(LogicElementsType.INPUT);
+    }
+
+    private boolean linkLogicElement(LogicElement logicElement) {
+        return Optional.ofNullable(logicElement.getInputLabels())
+                .map(inputLabels -> inputLabels.stream()
+                        .allMatch(inputLabel -> linkElementInput(logicElement, inputLabel)))
+                .orElse(handleInputLabelsNullPointer(logicElement));
+    }
+
+    private boolean isNotOutput(LogicElement logicElement) {
+        return !logicElement.getType().equals(LogicElementsType.OUTPUT);
+    }
+
+    private boolean linkElementInput(LogicElement logicElement, String inputLabel) {
+        return systemModel.getLogicElements().stream()
+                .filter(this::isNotOutput)
+                .filter(systemLogicElement -> inputLabel.equals(systemLogicElement.getLabel()))
+                .allMatch(logicElementToAssign -> assignLogicElementToInput(logicElement, logicElementToAssign));
+    }
+
+    private boolean assignLogicElementToInput(LogicElement logicElement, LogicElement logicElementToAssign) {
+        return Optional.ofNullable(logicElement.getInputs())
+                .map(logicElements -> logicElements.add(logicElementToAssign))
+                .orElse(handleInputNullPointer(logicElement));
+    }
+
+    static private List<String> extractGateInputsStrings(List<String> splittedGatesDeclaration) {
+        List<String> gateInputStrings = new ArrayList<>(splittedGatesDeclaration);
+        gateInputStrings.remove(0);
+        gateInputStrings.remove(0);
+        return gateInputStrings;
+    }
+
+    private boolean handleInputLabelsNullPointer(LogicElement logicElement) {
+        if(logicElement.getInputLabels() == null) {
+            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
+            return false;
+        } else return true;
+    }
+
+    private boolean handleInputNullPointer(LogicElement logicElement) {
+        if(logicElement.getInputs() == null) {
+            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
+            return false;
+        } else return true;
     }
 }
