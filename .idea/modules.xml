@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ISCAS89verificator.iml" filepath="$PROJECT_DIR$/ISCAS89verificator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ISCAS89validator.iml" filepath="$PROJECT_DIR$/ISCAS89validator.iml" />
     </modules>
   </component>
 </project>

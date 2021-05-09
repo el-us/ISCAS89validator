@@ -1,1 +1,1 @@
-# ISCAS89verificator
+# ISCAS89validator
