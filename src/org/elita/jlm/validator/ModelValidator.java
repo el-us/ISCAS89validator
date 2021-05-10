@@ -5,8 +5,6 @@ import org.elita.jlm.systemModel.logicElements.LogicElement;
 import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 import org.elita.jlm.systemModel.logicElements.impl.Output;
 
-import java.util.Objects;
-
 public class ModelValidator {
 
     SystemModel systemModel;
@@ -19,6 +17,7 @@ public class ModelValidator {
     public boolean validateModel() {
         if (AnyInputMapped()
                 && anyOutputMapped()
+                && anyInputMapped()
                 && checkIfAllOutputLinked()
                 && checkIfAllElementInputsLinked()) {
             System.out.println("System is valid");
@@ -34,41 +33,39 @@ public class ModelValidator {
     }
 
     private boolean anyOutputMapped() {
+        return systemModel.getLogicElementsByType(LogicElementsType.OUTPUT).size() > 0;
+    }
+
+    private boolean anyInputMapped() {
         return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
 
     private boolean checkIfAllOutputLinked() {
         return systemModel.getLogicElementsByType(LogicElementsType.OUTPUT).stream()
                 .map(logicElement -> (Output) logicElement)
-                .filter(this::checkIfOutputLinked)
-                .allMatch(Objects::nonNull);
+                .allMatch(this::checkIfOutputLinked);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private boolean checkIfOutputLinked(final Output output) {
-       return systemModel.getLogicElements().stream()
-                .filter(logicElement -> output.getInputs().get(0).equals(logicElement))
-                .anyMatch(Objects::nonNull);
+        if(output.getInputs().size() > 0) {
+        return systemModel.getLogicElements().stream()
+                        .anyMatch(logicElement -> output.getInputs().get(0).equals(logicElement));
+        } else return false;
     }
 
-    @SuppressWarnings("ConstantConditions")
     private boolean checkIfAllElementInputsLinked() {
         return systemModel.getLogicElements().stream()
                 .filter(logicElement -> !logicElement.getType().equals(LogicElementsType.INPUT))
-                .filter(this::checkIfElementInputsLinked)
-                .allMatch(Objects::nonNull);
+                .allMatch(this::checkIfElementInputsLinked);
     }
 
     private boolean checkIfElementInputsLinked(LogicElement logicElement) {
         return logicElement.getInputs().stream()
-                .filter(this::checkIfElementGivenInputLinked)
-                .allMatch(Objects::nonNull);
+                .allMatch(this::checkIfElementGivenInputLinked);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private boolean checkIfElementGivenInputLinked(LogicElement logicElementGivenInput) {
         return systemModel.getLogicElements().stream()
-                .filter(logicElement -> logicElement.equals(logicElementGivenInput))
-                .anyMatch(Objects::nonNull);
+                .anyMatch(logicElement -> logicElement.equals(logicElementGivenInput));
     }
 }
