@@ -100,8 +100,7 @@ public class ModelValidator {
     }
 
     private boolean checkIfAllElementInputsLinked() {
-        return systemModel.getLogicElements().stream()
-                .filter(logicElement -> !logicElement.getType().equals(LogicElementsType.INPUT))
+        return systemModel.getLogicElementsWithExcludedType(LogicElementsType.INPUT).stream()
                 .allMatch(this::checkIfElementInputsLinked);
     }
 
@@ -116,14 +115,12 @@ public class ModelValidator {
     }
 
     private boolean checkIfAllGatesLinked() {
-        return systemModel.getLogicElements().stream()
-                .filter(element -> !element.getType().equals(LogicElementsType.OUTPUT))
+        return systemModel.getLogicElementsWithExcludedType(LogicElementsType.OUTPUT).stream()
                 .allMatch(this::checkIfElementLinkedToAnyInput);
     }
 
     private boolean checkIfElementLinkedToAnyInput(final LogicElement logicElement) {
-        return systemModel.getLogicElements().stream()
-                .filter(element -> !element.getType().equals(LogicElementsType.INPUT))
+        return systemModel.getLogicElementsWithExcludedType(LogicElementsType.INPUT).stream()
                 .map(LogicElement::getInputs)
                 .anyMatch(inputs -> checkIfElementLinkedToGivenElementInput(inputs, logicElement));
     }

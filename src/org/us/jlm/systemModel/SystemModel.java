@@ -57,12 +57,10 @@ public class SystemModel {
                 .orElse(null);
     }
 
-    public LogicElement getLogicElementWithExcludedType(final String label, final String excludedType) {
+    public List<LogicElement> getLogicElementsWithExcludedType(final String excludedType) {
         return logicElements.stream()
                 .filter(logicElement -> !logicElement.getType().equals(excludedType))
-                .filter(logicElement -> logicElement.getLabel().equals(label))
-                .findFirst()
-                .orElse(null);
+                .collect(Collectors.toList());
     }
 
     @Override
