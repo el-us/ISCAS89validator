@@ -54,6 +54,7 @@ public class ModelValidator {
     @SuppressWarnings("ConstantConditions")
     private boolean checkIfAllElementInputsLinked() {
         return systemModel.getLogicElements().stream()
+                .filter(logicElement -> !logicElement.getType().equals(LogicElementsType.INPUT))
                 .filter(this::checkIfElementInputsLinked)
                 .allMatch(Objects::nonNull);
     }
