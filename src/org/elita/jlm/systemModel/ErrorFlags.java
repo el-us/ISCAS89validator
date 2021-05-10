@@ -50,7 +50,7 @@ public class ErrorFlags {
 
     public Boolean isSystemValid() {
         if(noInputs != null && noOutputs != null && notAllOutputLinked != null && notElementInputsLinked != null && notAllGatesLinked != null) {
-            return !(noInputs && noOutputs && notAllOutputLinked && notElementInputsLinked && notAllGatesLinked);
+            return !(noInputs || noOutputs || notAllOutputLinked || notElementInputsLinked || notAllGatesLinked);
         } else return false;
     }
 }
