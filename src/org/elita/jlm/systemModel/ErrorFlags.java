@@ -1,10 +1,11 @@
 package org.elita.jlm.systemModel;
 
 public class ErrorFlags {
-    Boolean noInputs;
-    Boolean noOutputs;
-    Boolean notAllOutputLinked;
-    Boolean notElementInputsLinked;
+    private Boolean noInputs;
+    private Boolean noOutputs;
+    private Boolean notAllOutputLinked;
+    private Boolean notElementInputsLinked;
+    private Boolean notAllGatesLinked;
 
 
     public Boolean getNoInputs() {
@@ -26,6 +27,7 @@ public class ErrorFlags {
     public Boolean getNotAllOutputLinked() {
         return notAllOutputLinked;
     }
+
     public void setNotAllOutputLinked(Boolean notAllOutputLinked) {
         this.notAllOutputLinked = notAllOutputLinked;
     }
@@ -38,9 +40,17 @@ public class ErrorFlags {
         this.notElementInputsLinked = notElementInputsLinked;
     }
 
+    public Boolean getNotAllGatesLinked() {
+        return notAllGatesLinked;
+    }
+
+    public void setNotAllGatesLinked(Boolean notAllGatesLinked) {
+        this.notAllGatesLinked = notAllGatesLinked;
+    }
+
     public Boolean isSystemValid() {
-        if(noInputs != null && noOutputs != null && notAllOutputLinked != null && notElementInputsLinked != null) {
-            return noInputs && noOutputs && notAllOutputLinked && notElementInputsLinked;
+        if(noInputs != null && noOutputs != null && notAllOutputLinked != null && notElementInputsLinked != null && notAllGatesLinked != null) {
+            return !(noInputs && noOutputs && notAllOutputLinked && notElementInputsLinked && notAllGatesLinked);
         } else return false;
     }
 }

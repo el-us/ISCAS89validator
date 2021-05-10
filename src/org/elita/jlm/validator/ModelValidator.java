@@ -5,6 +5,8 @@ import org.elita.jlm.systemModel.logicElements.LogicElement;
 import org.elita.jlm.systemModel.logicElements.LogicElementsType;
 import org.elita.jlm.systemModel.logicElements.impl.Output;
 
+import java.util.List;
+
 public class ModelValidator {
 
     SystemModel systemModel;
@@ -51,6 +53,14 @@ public class ModelValidator {
             systemModel.getErrorFlags().setNotElementInputsLinked(true);
         }
 
+        if(checkIfAllGatesLinked()) {
+            System.out.println("All mapped logic gates are linked");
+            systemModel.getErrorFlags().setNotAllGatesLinked(false);
+        } else {
+            System.out.println("Error. Not all logic gates linked");
+            systemModel.getErrorFlags().setNotAllGatesLinked(true);
+        }
+
         if (systemModel.getErrorFlags().isSystemValid()) {
             System.out.println("\nSystem is valid");
             return true;
@@ -58,7 +68,7 @@ public class ModelValidator {
             System.out.println();
             System.out.println("*******************************************************");
             System.out.println("Error. Some errors during mapping and linking occurred." +
-                    "\nSystem is not valid. Please check your ISCAS'90 file");
+                    "\nSystem is not valid. Please check your ISCAS'89 file");
             System.out.println("*******************************************************");
             return false;
         }
@@ -95,13 +105,34 @@ public class ModelValidator {
                 .allMatch(this::checkIfElementInputsLinked);
     }
 
-    private boolean checkIfElementInputsLinked(LogicElement logicElement) {
+    private boolean checkIfElementInputsLinked(final LogicElement logicElement) {
         return logicElement.getInputs().stream()
                 .allMatch(this::checkIfElementGivenInputLinked);
     }
 
-    private boolean checkIfElementGivenInputLinked(LogicElement logicElementGivenInput) {
+    private boolean checkIfElementGivenInputLinked(final LogicElement logicElementGivenInput) {
         return systemModel.getLogicElements().stream()
                 .anyMatch(logicElement -> logicElement.equals(logicElementGivenInput));
+    }
+
+    // FIXME not working properly
+    private boolean checkIfAllGatesLinked() {
+        return systemModel.getLogicElements().stream()
+                .filter(element -> !element.getType().equals(LogicElementsType.OUTPUT))
+                .allMatch(this::checkIfElementLinkedToAnyInput);
+    }
+
+    private boolean checkIfElementLinkedToAnyInput(final LogicElement logicElement) {
+        return systemModel.getLogicElements().stream()
+                .filter(element -> !element.getType().equals(LogicElementsType.INPUT))
+                .map(LogicElement::getInputs)
+                .anyMatch(inputs -> checkIfElementLinkedToGivenElementInput(inputs, logicElement));
+    }
+
+    private boolean checkIfElementLinkedToGivenElementInput(final List<LogicElement> inputs, LogicElement logicElement) {
+        if(inputs.size() > 0) {
+            return inputs.stream()
+                    .anyMatch(input -> input.equals(logicElement));
+        } else return false;
     }
 }
