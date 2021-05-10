@@ -18,7 +18,7 @@ public class ModelValidator {
 
     public boolean validateModel() {
         if (AnyInputMapped()
-                && AnyOutputMapped()
+                && anyOutputMapped()
                 && checkIfAllOutputLinked()
                 && checkIfAllElementInputsLinked()) {
             System.out.println("System is valid");
@@ -33,7 +33,7 @@ public class ModelValidator {
         return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
 
-    private boolean AnyOutputMapped() {
+    private boolean anyOutputMapped() {
         return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
 

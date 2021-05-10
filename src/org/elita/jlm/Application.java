@@ -9,7 +9,7 @@ public class Application {
     public static void main(String ... args) {
 
         IscasCodeMapper iscasCodeMapper = new IscasCodeMapper();
-        SystemModel systemModel = iscasCodeMapper.mapIscasCode("s27.bench");
+        SystemModel systemModel = iscasCodeMapper.mapIscasCode("s27error.bench");
 
         systemModel.getLogicElements()
                 .forEach(element -> System.out.println(element.getLabel() + ": " + element.getType() + " inputs: " + element.getInputLabels()));
