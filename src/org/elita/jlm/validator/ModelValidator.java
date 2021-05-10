@@ -19,7 +19,8 @@ public class ModelValidator {
     public boolean validateModel() {
         if (AnyInputMapped()
                 && AnyOutputMapped()
-                && checkIfAllOutputLinked()) {
+                && checkIfAllOutputLinked()
+                && checkIfAllElementInputsLinked()) {
             System.out.println("System is valid");
             return true;
         } else {
