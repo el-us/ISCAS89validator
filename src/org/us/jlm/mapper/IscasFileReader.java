@@ -1,4 +1,4 @@
-package org.elita.jlm.mapper;
+package org.us.jlm.mapper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,7 @@ public class IscasFileReader {
     public static List<String> readIscasFile(String fileName) {
         List<String> iscasCodeRowList = new ArrayList<>();
         File file = new File(fileName);
-        try (Scanner scanner = new Scanner(file);){
+        try (Scanner scanner = new Scanner(file)){
             while (scanner.hasNextLine()) {
                iscasCodeRowList.add(scanner.nextLine());
             }

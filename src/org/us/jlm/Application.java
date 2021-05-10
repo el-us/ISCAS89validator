@@ -1,8 +1,8 @@
-package org.elita.jlm;
+package org.us.jlm;
 
-import org.elita.jlm.mapper.IscasCodeMapper;
-import org.elita.jlm.systemModel.SystemModel;
-import org.elita.jlm.validator.*;
+import org.us.jlm.mapper.IscasCodeMapper;
+import org.us.jlm.systemModel.SystemModel;
+import org.us.jlm.validator.*;
 
 public class Application {
 

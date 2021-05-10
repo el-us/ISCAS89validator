@@ -1,14 +1,14 @@
-package org.elita.jlm.mapper;
+package org.us.jlm.mapper;
 
 
-import org.elita.jlm.systemModel.SystemModel;
-import org.elita.jlm.systemModel.logicElements.LogicElement;
-import org.elita.jlm.systemModel.logicElements.LogicElementsType;
-import org.elita.jlm.systemModel.logicElements.impl.*;
+import org.us.jlm.systemModel.SystemModel;
+import org.us.jlm.systemModel.logicElements.LogicElement;
+import org.us.jlm.systemModel.logicElements.LogicElementsType;
+import org.us.jlm.systemModel.logicElements.impl.*;
 
 import java.util.*;
 
-import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
+import static org.us.jlm.mapper.IscasFileReader.readIscasFile;
 
 public class IscasCodeMapper {
 
@@ -113,6 +113,7 @@ public class IscasCodeMapper {
     }
 
     private Boolean mapLogicGatesForType(String gateLabel, String gateType, List<String> inputLabels) {
+        //noinspection EnhancedSwitchMigration
         switch (gateType) {
             case LogicElementsType.AND:
                 return systemModel.getLogicElements().add(new And(gateLabel, inputLabels));

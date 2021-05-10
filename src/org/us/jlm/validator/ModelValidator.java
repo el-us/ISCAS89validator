@@ -1,9 +1,9 @@
-package org.elita.jlm.validator;
+package org.us.jlm.validator;
 
-import org.elita.jlm.systemModel.SystemModel;
-import org.elita.jlm.systemModel.logicElements.LogicElement;
-import org.elita.jlm.systemModel.logicElements.LogicElementsType;
-import org.elita.jlm.systemModel.logicElements.impl.Output;
+import org.us.jlm.systemModel.SystemModel;
+import org.us.jlm.systemModel.logicElements.LogicElement;
+import org.us.jlm.systemModel.logicElements.LogicElementsType;
+import org.us.jlm.systemModel.logicElements.impl.Output;
 
 import java.util.List;
 
