@@ -1,27 +1,33 @@
-package org.elita.jlm.mapper;
+package org.us.jlm.mapper;
 
 
-import org.elita.jlm.systemModel.SystemModel;
-import org.elita.jlm.systemModel.logicElements.LogicElement;
-import org.elita.jlm.systemModel.logicElements.LogicElementsType;
-import org.elita.jlm.systemModel.logicElements.impl.*;
+import org.us.jlm.systemModel.SystemModel;
+import org.us.jlm.systemModel.logicElements.LogicElement;
+import org.us.jlm.systemModel.logicElements.LogicElementsType;
+import org.us.jlm.systemModel.logicElements.impl.*;
 
 import java.util.*;
 
-import static org.elita.jlm.mapper.IscasFileReader.readIscasFile;
+import static org.us.jlm.mapper.IscasFileReader.readIscasFile;
 
 public class IscasCodeMapper {
 
     private static final String HASH = "#";
     private static final char SPACE = ' ';
+    private int parsedElements;
 
-    private final SystemModel systemModel = new SystemModel();
+    private final SystemModel systemModel;
 
+
+    public IscasCodeMapper() {
+        this.parsedElements = 0;
+        this.systemModel = new SystemModel();
+    }
 
     public SystemModel mapIscasCode(String fileName) {
         List<String> iscasCodelineList = readIscasFile(fileName);
 
-        long numberOfParsedLines = iscasCodelineList.stream()
+        long parsedGates = iscasCodelineList.stream()
                 .map(this::removeSpaces)
                 .filter(this::skipEmptyLines)
                 .filter(this::ignoreHashedLines)
@@ -30,17 +36,17 @@ public class IscasCodeMapper {
                 .map(this::mapOutputs)
                 .filter(Objects::nonNull)
                 .map(this::mapLogicGate)
-                .filter(aBoolean -> aBoolean)
                 .count();
 
-        System.out.println("Successfully parsed " + numberOfParsedLines + " logic elements from file: " + fileName);
+        System.out.println("\nSuccessfully parsed " + parsedElements + " elements\n" +
+                "including: " + parsedGates + " logic gates from file: " + fileName);
 
         boolean allLinked = linkLogicElements();
 
         if(allLinked) {
-            System.out.println("All element successfully linked");
+            System.out.println("\nAll element from file linked\n");
         } else {
-            System.out.println("Some errors during linking occurred");
+            System.out.println("\nSome errors during linking occurred\n");
         }
         return systemModel;
     }
@@ -68,6 +74,7 @@ public class IscasCodeMapper {
         if (splittedInputDeclaration.get(0).equals(LogicElementsType.INPUT)) {
             Input input = new Input(splittedInputDeclaration.get(1));
             systemModel.getLogicElements().add(input);
+            parsedElements++;
             return null;
         }
         return line;
@@ -78,6 +85,7 @@ public class IscasCodeMapper {
         if (splittedOutputDeclaration.get(0).equals(LogicElementsType.OUTPUT)) {
             Output output = new Output(splittedOutputDeclaration.get(1));
             systemModel.getLogicElements().add(output);
+            parsedElements++;
             return null;
         }
         return line;
@@ -99,12 +107,13 @@ public class IscasCodeMapper {
         String gateLabel = splittedGateDeclaration.get(0);
         String gateType = splittedGateDeclaration.get(1);
         List<String> inputLabels = extractGateInputsStrings(splittedGateDeclaration);
-
+        parsedElements++;
         return mapLogicGatesForType(gateLabel, gateType, inputLabels)
                 && mapOutputToLogicElement(gateLabel);
     }
 
     private Boolean mapLogicGatesForType(String gateLabel, String gateType, List<String> inputLabels) {
+        //noinspection EnhancedSwitchMigration
         switch (gateType) {
             case LogicElementsType.AND:
                 return systemModel.getLogicElements().add(new And(gateLabel, inputLabels));

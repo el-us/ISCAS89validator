@@ -1,20 +1,20 @@
-package org.elita.jlm.systemModel.logicElements.impl;
+package org.us.jlm.systemModel.logicElements.impl;
 
-import org.elita.jlm.systemModel.logicElements.LogicElement;
-import org.elita.jlm.systemModel.logicElements.LogicElementsType;
+import org.us.jlm.systemModel.logicElements.LogicElement;
+import org.us.jlm.systemModel.logicElements.LogicElementsType;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class And implements LogicElement {
+public class Xor implements LogicElement {
 
     private final String label;
     private List<String> inputLabels;
     private List<LogicElement> inputs;
 
-    public And(String label, List<String> inputLabels) {
+    public Xor(String label, List<String> inputsLabels) {
         this.label = label;
-        this.inputLabels = inputLabels;
+        this.inputLabels = inputsLabels;
         this.inputs = new ArrayList<>();
     }
 
@@ -30,7 +30,7 @@ public class And implements LogicElement {
 
     @Override
     public String getType() {
-        return LogicElementsType.AND;
+        return LogicElementsType.XOR;
     }
 
     @Override

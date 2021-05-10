@@ -1,8 +1,8 @@
-package org.elita.jlm.systemModel;
+package org.us.jlm.systemModel;
 
-import org.elita.jlm.systemModel.logicElements.LogicElement;
-import org.elita.jlm.systemModel.logicElements.LogicElementsType;
-import org.elita.jlm.systemModel.logicElements.impl.Output;
+import org.us.jlm.systemModel.logicElements.LogicElement;
+import org.us.jlm.systemModel.logicElements.LogicElementsType;
+import org.us.jlm.systemModel.logicElements.impl.Output;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +49,7 @@ public class SystemModel {
 
     public Output getOutputByLabel(final String label) {
         List<LogicElement> inputs = getLogicElementsByType(LogicElementsType.OUTPUT);
+        //noinspection SimplifyOptionalCallChains
         return inputs.stream()
                 .filter(output -> output.getLabel().equals(label))
                 .findFirst()
@@ -56,12 +57,10 @@ public class SystemModel {
                 .orElse(null);
     }
 
-    public LogicElement getLogicElementWithExcludedType(final String label, final String excludedType) {
+    public List<LogicElement> getLogicElementsWithExcludedType(final String excludedType) {
         return logicElements.stream()
                 .filter(logicElement -> !logicElement.getType().equals(excludedType))
-                .filter(logicElement -> logicElement.getLabel().equals(label))
-                .findFirst()
-                .orElse(null);
+                .collect(Collectors.toList());
     }
 
     @Override
