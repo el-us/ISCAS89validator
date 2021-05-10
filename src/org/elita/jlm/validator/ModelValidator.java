@@ -31,7 +31,7 @@ public class ModelValidator {
             systemModel.getErrorFlags().setNoOutputs(false);
 
             if(checkIfAllOutputLinked()) {
-                System.out.println("All mapped output are successfully linked");
+                System.out.println("All mapped output are linked");
                 systemModel.getErrorFlags().setNotAllOutputLinked(false);
             } else {
                 System.out.println("Error. Not all output linked!");
@@ -44,7 +44,7 @@ public class ModelValidator {
         }
 
         if(checkIfAllElementInputsLinked()) {
-            System.out.println("All logic gates inputs linked");
+            System.out.println("All mapped logic gates inputs linked");
             systemModel.getErrorFlags().setNotElementInputsLinked(false);
         } else {
             System.out.println("Error. Not all logic gates inputs linked");
