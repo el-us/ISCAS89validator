@@ -115,7 +115,6 @@ public class ModelValidator {
                 .anyMatch(logicElement -> logicElement.equals(logicElementGivenInput));
     }
 
-    // FIXME not working properly
     private boolean checkIfAllGatesLinked() {
         return systemModel.getLogicElements().stream()
                 .filter(element -> !element.getType().equals(LogicElementsType.OUTPUT))
