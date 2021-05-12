@@ -74,7 +74,6 @@ public class ModelValidator {
         }
     }
 
-
     private boolean anyInputMapped() {
         return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
