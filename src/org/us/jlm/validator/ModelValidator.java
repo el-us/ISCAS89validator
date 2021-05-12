@@ -74,16 +74,13 @@ public class ModelValidator {
         }
     }
 
-    private boolean AnyInputMapped() {
+
+    private boolean anyInputMapped() {
         return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
 
     private boolean anyOutputMapped() {
         return systemModel.getLogicElementsByType(LogicElementsType.OUTPUT).size() > 0;
-    }
-
-    private boolean anyInputMapped() {
-        return systemModel.getLogicElementsByType(LogicElementsType.INPUT).size() > 0;
     }
 
     private boolean checkIfAllOutputLinked() {
