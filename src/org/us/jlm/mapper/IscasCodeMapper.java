@@ -100,7 +100,8 @@ public class IscasCodeMapper {
     }
 
     private boolean isNotInputAndOutput(List<String> splittedGatesDeclaration) {
-        return !splittedGatesDeclaration.get(0).equals(LogicElementsType.INPUT) || !splittedGatesDeclaration.get(0).equals(LogicElementsType.OUTPUT);
+        return !splittedGatesDeclaration.get(0).equals(LogicElementsType.INPUT)
+                || !splittedGatesDeclaration.get(0).equals(LogicElementsType.OUTPUT);
     }
 
     private Boolean mapLogicGate(final List<String> splittedGateDeclaration) {
@@ -166,7 +167,8 @@ public class IscasCodeMapper {
         return systemModel.getLogicElements().stream()
                 .filter(this::isNotOutput)
                 .filter(systemLogicElement -> inputLabel.equals(systemLogicElement.getLabel()))
-                .allMatch(logicElementToAssign -> assignLogicElementToInput(logicElement, logicElementToAssign));
+                .allMatch(logicElementToAssign ->
+                        assignLogicElementToInput(logicElement, logicElementToAssign));
     }
 
     private boolean assignLogicElementToInput(LogicElement logicElement, LogicElement logicElementToAssign) {
@@ -184,14 +186,17 @@ public class IscasCodeMapper {
 
     private boolean handleInputLabelsNullPointer(LogicElement logicElement) {
         if(logicElement.getInputLabels() == null) {
-            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
+            System.out.println("Logic element: " + logicElement.getType() +
+                    " with label: " + logicElement.getLabel() +
+                    " has no inputLabels: inputLabels = " + logicElement.getInputLabels());
             return false;
         } else return true;
     }
 
     private boolean handleInputNullPointer(LogicElement logicElement) {
         if(logicElement.getInputs() == null) {
-            System.out.println("Logic element: " + logicElement.getType() + " with label: " + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
+            System.out.println("Logic element: " + logicElement.getType() + " with label: "
+                    + logicElement.getLabel() + " has no inputs: inputs = " + logicElement.getInputs());
             return false;
         } else return true;
     }
